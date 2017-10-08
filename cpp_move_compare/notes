@@ -1,0 +1,26 @@
+** A 'move' really moves all the resources of the source object into the destination object,
+leaving the source object in null or an undefined state.
+
+** A 'move' can be accomplished using:
+- assignment
+- constructor when constructing from another object of same type
+
+** C++ provides you a way to describe how a move should happen. You can do this via:
+- move assignment operator
+- move constructor
+
+** Objects of the classes that defines these 2 functions enjoy the right of being moveable
+
+** C++ compiler can also generate these 2 functions by default as in case of copying. It does
+so if the class doesn't define its own destructor, copy/move constructor or copy/move assignment operator
+
+** Also, the implicitly declared move constructor/assignment operator will be defined as deleted
+if the class has non-movable data members or derives from a class that can't be moved or deleted.
+
+** Rules of thumb for lvalues vs rvalues
+*** Prior to C++11, all non-const references were always bound to lvalues.
+*** C++11 introduced rvalue references whose non-const versions can bound to rvalues
+*** Rule 1: Everything that has a name is a lvalue. But all lvalue's don't necessarily have names.
+            For example, functions returning lvalue refs
+*** Rule 2: Something that you can take an address of, is a lvalue. 
+            It is not always true - in case member functions of temporaries are being called
