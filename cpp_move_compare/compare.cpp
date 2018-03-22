@@ -8,15 +8,15 @@
 
 #define SEQ_SIZE 1000
 #define dout if (0) std::cout
-class MoveableBuf
+class MoveableSeq
 {
 protected:
     int *buf;
     int size;
 public:
-    MoveableBuf() { size = -1; }
-    MoveableBuf(int sz, int start, int incr) : size(sz) {
-        dout << "constructor of Moveable called\n";
+    MoveableSeq() { size = -1; }
+    MoveableSeq(int sz, int start, int incr) : size(sz) {
+        dout << "constructor of MoveableSeq called\n";
         buf = new int[sz];
         int val = start;
         for (int i = 0; i < sz; i++) {
@@ -25,14 +25,14 @@ public:
         }
     }
 
-    ~MoveableBuf() {
-        dout << "destructor of Moveable called\n";
+    ~MoveableSeq() {
+        dout << "destructor of MoveableSeq called\n";
         delete buf;
         size = 0;
     }
 
-    MoveableBuf(const MoveableBuf& b) {
-        dout << "Copy constructor of Moveable called\n";
+    MoveableSeq(const MoveableSeq& b) {
+        dout << "Copy constructor of MoveableSeq called\n";
         buf = new int[b.size];
         for (int i = 0; i < b.size; i++) {
             buf[i] = b.get(i);
@@ -44,8 +44,8 @@ public:
         return buf[i];
     }
 
-    MoveableBuf(MoveableBuf&& b) {
-        dout << "Move constructor of MoveableBuf called\n";
+    MoveableSeq(MoveableSeq&& b) {
+        dout << "Move constructor of MoveableSeq called\n";
         buf = b.buf;
         size = b.size;
         b.buf = nullptr;
@@ -54,30 +54,30 @@ public:
 };
 
 
-class NotMoveableBuf : public MoveableBuf
+class NotMoveableSeq : public MoveableSeq
 {
 public:
-    NotMoveableBuf(int sz, int start, int incr) : MoveableBuf(sz, start, incr) { }
+    NotMoveableSeq(int sz, int start, int incr) : MoveableSeq(sz, start, incr) { }
     /* A user defined copy constructor => no implicit move constructor */
-    NotMoveableBuf(const NotMoveableBuf& b) : MoveableBuf(b) { }
+    NotMoveableSeq(const NotMoveableSeq& b) : MoveableSeq(b) { }
 };
 
 
-void fillCfgBufNoMove(std::vector<NotMoveableBuf>& vec, int len)
+void fillCfgSeqNoMove(std::vector<NotMoveableSeq>& vec, int len)
 {
     for (int i = 1; i <= len; i++) {
-        vec.push_back(NotMoveableBuf(SEQ_SIZE, i, i));
+        vec.push_back(NotMoveableSeq(SEQ_SIZE, i, i));
     }
 }
 
-void fillCfgBufWithMove(std::vector<MoveableBuf>& vec, int len)
+void fillCfgSeqWithMove(std::vector<MoveableSeq>& vec, int len)
 {
     for (int i = 1; i <= len; i++) {
-        vec.push_back(MoveableBuf(SEQ_SIZE, i, i));
+        vec.push_back(MoveableSeq(SEQ_SIZE, i, i));
     }
 }
 
-void fillCfgBufWithEmplace(std::vector<MoveableBuf>& vec, int len)
+void fillCfgSeqWithEmplace(std::vector<MoveableSeq>& vec, int len)
 {
     for (int i = 1; i <= len; i++) {
         vec.emplace_back(SEQ_SIZE, i, i);
@@ -88,39 +88,29 @@ int main()
 {
     int element_count;
     std::cin >> element_count;
-
-    std::vector<NotMoveableBuf> vec1;
-    vec1.reserve(element_count*2);
-
-    std::vector<MoveableBuf> vec2;
-    vec2.reserve(element_count*2);
-
-    std::vector<MoveableBuf> vec3;
-    vec3.reserve(element_count*2);
     {
+        std::vector<NotMoveableSeq> vec1;
+        vec1.reserve(element_count*2);
         auto t1 = std::chrono::high_resolution_clock::now();
-        fillCfgBufNoMove(vec1, element_count);
+        fillCfgSeqNoMove(vec1, element_count);
         auto t2 = std::chrono::high_resolution_clock::now();
-        std::cout << "f() took "
-            << std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count()
-            << " milliseconds\n";
+        std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count() << std::endl;
     }
     {
+        std::vector<MoveableSeq> vec2;
+        vec2.reserve(element_count*2);
         auto t1 = std::chrono::high_resolution_clock::now();
-        fillCfgBufWithMove(vec2, element_count);
+        fillCfgSeqWithMove(vec2, element_count);
         auto t2 = std::chrono::high_resolution_clock::now();
-        std::cout << "f() took "
-            << std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count()
-            << " milliseconds\n";
+        std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count() << std::endl;
     }
     {
+        std::vector<MoveableSeq> vec3;
+        vec3.reserve(element_count*2);
         auto t1 = std::chrono::high_resolution_clock::now();
-        fillCfgBufWithEmplace(vec3, element_count);
+        fillCfgSeqWithEmplace(vec3, element_count);
         auto t2 = std::chrono::high_resolution_clock::now();
-        std::cout << "f() took "
-            << std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count()
-            << " milliseconds\n";
+        std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count() << std::endl;
     }
-
     return 0;
 }

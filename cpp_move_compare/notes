@@ -1,4 +1,4 @@
-** A 'move' really moves all the resources of the source object into the destination object,
+** A 'move' is meant to move all the resources of the source object into the destination object,
 leaving the source object in null or an undefined state.
 
 ** A 'move' can be accomplished using:
@@ -24,3 +24,15 @@ if the class has non-movable data members or derives from a class that can't be 
             For example, functions returning lvalue refs
 *** Rule 2: Something that you can take an address of, is a lvalue. 
             It is not always true - in case member functions of temporaries are being called
+
+** Prior to C++11, you could bound a const lvalue reference with the rvalues. But, with a const
+lvalue reference you could not modify the rvalue object and therefore C++11 introduce rvalue
+references. Using rvalue references, you can now:
+- move the rvalue to another object i.e. rvalue object
+
+** List of experiments **
+*** example classes where compiler doesn't generate the move constructor and assignment
+
+*** use of rvalue references in body
+
+*** copy elison
