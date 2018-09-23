@@ -22,9 +22,10 @@ import matplotlib.pyplot as plt
 
 #plt.plot(lxaxis, y1axis, '--ro', lxaxis, y2axis, ':bs', lxaxis, y3axis, ':g^')
 plt.ylabel('Running time (in milliseconds)');
-plt.xlabel('No of objects copied to std::vector');
-plt.plot(lxaxis, y1axis, linestyle='--', color='r', marker='o');
-plt.plot(lxaxis, y2axis, linestyle=':', color='b', marker='s');
-plt.plot(lxaxis, y3axis, linestyle=':', color='g', marker='^');
+plt.xlabel('No of objects copied/moved/emplaced to std::vector (log10 scale)');
+plt.plot(lxaxis, y1axis, linestyle='--', color='r', marker='o', label="copy");
+plt.plot(lxaxis, y2axis, linestyle=':', color='b', marker='s', label="move");
+plt.plot(lxaxis, y3axis, linestyle=':', color='g', marker='^', label="emplace");
+plt.legend()
 plt.savefig("plt.png")
 plt.show()
