@@ -30,6 +30,7 @@ int main()
     g.addEdge(8, 9, NULL);
     
     g.print();
+    g.printDot();
 
     DFS *dfs = g.doDFS();
     for (auto c : dfs->components) {

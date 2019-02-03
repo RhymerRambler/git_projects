@@ -44,6 +44,7 @@ public:
     void addNode(int id, NodeInfo *ni);
     void addEdge(int id1, int id2, EdgeInfo* ei);
     void print();
+    void printDot();
     DFS* doDFS();
 };
 

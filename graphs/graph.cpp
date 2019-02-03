@@ -1,6 +1,7 @@
 #include <graph.h>
 
 #include <iostream>
+#include <fstream>
 
 void Graph::addNode(int id, NodeInfo *ni)
 {
@@ -21,6 +22,24 @@ void Graph::addEdge(int id1, int id2, EdgeInfo* ei)
     Node::NE ne2(ei, n1);
     (n1->nlist).push_back(ne1);
     (n2->nlist).push_back(ne2);
+}
+
+void Graph::printDot()
+{
+    std::ofstream fout("g.dot", std::ofstream::out);
+    fout << "digraph G {\n"
+            "\tgraph [fontname=\"fixed\"];\n"
+            "\tnode [fontname=\"fixed\"];\n"
+            "\tedge [fontname=\"fixed\"];\n";
+    for (auto it = m_nodes.begin(); it != m_nodes.end(); it++)
+    {
+        std::vector<Node::NE>& nlist = (it->second)->nlist;
+        for (auto it2 = nlist.begin(); it2 != nlist.end(); ++it2) {
+            fout << "\t" << it->first << " -> " << it2->second->id << ";\n";
+        }
+    }
+    fout << "}";
+    fout.close();
 }
 
 void Graph::print()
