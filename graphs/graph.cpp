@@ -1,82 +1,96 @@
-#include <graph.h>
+#include "graph.h"
 
 #include <iostream>
 #include <fstream>
 
-void Graph::addNode(int id, NodeInfo *ni)
+void Graph::addNodes(int count)
 {
-    Node *n = new Node();
-    n->id = id;
-    assert(m_nodes.find(id) == m_nodes.end());
-    m_nodes[id] = n;
-    n->info = ni;
+    for (int i = 0; i < count; i++) {
+        Node *n = new Node();
+        n->id = i;
+        m_Nodes.push_back(n);
+    }
+    m_Size = count;
 }
 
-void Graph::addEdge(int id1, int id2, EdgeInfo* ei)
+void Graph::addEdge(int id1, int id2, Edge* e)
 {
-    assert(m_nodes.find(id1) != m_nodes.end());
-    assert(m_nodes.find(id2) != m_nodes.end());
-    Node* n1 = m_nodes[id1];
-    Node* n2 = m_nodes[id2];
-    Node::NE ne1(ei, n2);
-    Node::NE ne2(ei, n1);
+    Node* n1 = m_Nodes[id1];
+    Node* n2 = m_Nodes[id2];
+    Node::NE ne1(n2, e);
     (n1->nlist).push_back(ne1);
-    (n2->nlist).push_back(ne2);
+    if (!m_IsDirected) {
+        Node::NE ne2(n1, e);
+        (n2->nlist).push_back(ne2);
+    }
 }
 
-void Graph::printDot()
+void Graph::addEdge(int id1, int id2)
 {
-    std::ofstream fout("g.dot", std::ofstream::out);
-    fout << "digraph G {\n"
-            "\tgraph [fontname=\"fixed\"];\n"
+    addEdge(id1, id2, new Edge());
+}
+
+void Graph::addEdge(int id1, int id2, int label)
+{
+    Edge *e = new Edge();
+    e->label = label;
+    e->label_set = true;
+    addEdge(id1, id2, e);
+}
+
+void Graph::printDot(std::string name) const
+{
+    std::ofstream fout((name + ".dot").c_str(), std::ofstream::out);
+    std::string sep;
+    if (m_IsDirected) {
+        fout << "digraph G {\n";
+        sep = "->";
+    } else {
+        fout << "graph G {\n";
+        sep = "--";
+    }
+
+    fout << "\tgraph [fontname=\"fixed\"];\n"
             "\tnode [fontname=\"fixed\"];\n"
             "\tedge [fontname=\"fixed\"];\n";
-    for (auto it = m_nodes.begin(); it != m_nodes.end(); it++)
+    std::map<Edge*, bool> visited_edge_map;
+    for (auto i = 0; i < m_Size; i++)
     {
-        std::vector<Node::NE>& nlist = (it->second)->nlist;
-        for (auto it2 = nlist.begin(); it2 != nlist.end(); ++it2) {
-            fout << "\t" << it->first << " -> " << it2->second->id << ";\n";
+        std::vector<Node::NE>& nlist = m_Nodes[i]->nlist;
+        for (auto it = nlist.begin(); it != nlist.end(); ++it) {
+            if (visited_edge_map[it->second]) continue;
+            visited_edge_map[it->second] = true;
+            fout << "\t" << i << " " << sep << " " << it->first->id;
+            
+            if (it->second->label_set) { // label of the edge if present
+                fout << " [label = \"" << it->second->label << "\"]";
+            }
+            fout << ";\n";
         }
     }
     fout << "}";
     fout.close();
 }
 
-void Graph::print()
+void Graph::print() const
 {
-    for (auto it = m_nodes.begin(); it != m_nodes.end(); it++)
+    for (auto i = 0; i < m_Size; i++)
     {
-        std::cout << it->first << " ==> ";
-        std::vector<Node::NE>& nlist = (it->second)->nlist;
-        for (auto it2 = nlist.begin(); it2 != nlist.end(); ++it2) {
-            std::cout << it2->second->id << ", ";
+        std::cout << i << " ==> ";
+        std::vector<Node::NE>& nlist = m_Nodes[i]->nlist;
+        for (auto it = nlist.begin(); it != nlist.end(); ++it) {
+            std::cout << it->first->id << ", ";
         }
         std::cout <<"\n";
     }
 }
 
-void Graph::dfsHelper(Node* v, std::vector<Node*>& t)
+std::vector<Node::NE>* Graph::adj(int id) const
 {
-    if (v->info->visited == false) {
-        v->info->visited = true;
-        t.push_back(v);
-        for (auto ne : v->nlist) {
-            dfsHelper(ne.second, t);
-        }
-    }
+    return &m_Nodes[id]->nlist;    
 }
 
-DFS* Graph::doDFS()
+int Graph::getSize() const
 {
-    auto it = m_nodes.begin();
-    DFS *dfs = new DFS();
-    while (1) {
-        std::vector<Node*> dfs_trav;
-        dfsHelper(it->second, dfs_trav);
-        (dfs->components).push_back(dfs_trav);
-        ++it;
-        while ((it != m_nodes.end()) && (it->second->info)->visited) it++;
-        if (it == m_nodes.end()) break;
-    }
-    return dfs;
+    return m_Size;
 }

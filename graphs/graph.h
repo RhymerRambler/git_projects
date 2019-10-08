@@ -2,49 +2,41 @@
 
 #include <map>
 #include <vector>
+#include <string>
 
 #include <assert.h>
-struct EdgeInfo
+struct Edge
 {
-  int cost;
-};
-
-
-struct NodeInfo
-{
-  bool visited;
-  NodeInfo() : visited(false) { }
-  NodeInfo(bool v) : visited(v) { }
+    int label;
+    bool label_set = false;
 };
 
 struct Node
 {
-  int id;
-  typedef std::pair<EdgeInfo*, Node*> NE;
-  std::vector<Node::NE> nlist;
-  NodeInfo* info;
-};
-
-struct Edge
-{
-  Node *n1, *n2;
-  EdgeInfo *info;  
-};
-
-struct DFS
-{
-    std::vector<std::vector<Node*>> components;
+    int id;
+    using NE = std::pair<Node*, Edge*>;
+    std::vector<Node::NE> nlist;
 };
 
 class Graph
 {
-    std::map<int, Node*> m_nodes;
-    void dfsHelper(Node*, std::vector<Node*>&);    
+    bool m_IsDirected;
+    int m_Size;
+    std::vector<Node*> m_Nodes;
 public:
-    void addNode(int id, NodeInfo *ni);
-    void addEdge(int id1, int id2, EdgeInfo* ei);
-    void print();
-    void printDot();
-    DFS* doDFS();
+    Graph(bool directed=false) : m_IsDirected(directed) { }
+    void addNodes(int count);
+
+    void addEdge(int id1, int id2, Edge* e);
+    void addEdge(int id1, int id2);
+    void addEdge(int id1, int id2, int label);
+
+    int getSize() const;
+    std::vector<Node::NE>* adj(int) const;
+
+    void print() const;
+    void printDot(std::string name) const;
+
+    bool isDirected() const { return m_IsDirected; }
 };
 
