@@ -80,5 +80,13 @@ int main()
   // now if we say delete the owned object from pob2
   pob2.reset();
   // std::cout << *pob1_new; => will lead to segfault
+
+  // this will lead to double-free exception, as object owned by pob1_new
+  // was already deleted by pob2.reset()
+  // pob1_new = std::make_unique<TestBuf>(3);
+
+  // also, at end of program, we will hit the double-free exception i.e. when pob1_new would
+  // be destroyed, as it will again try to destroy the TestBuf object, destroyed
+  // earlier already by pob2.reset()
   return 0;
 }

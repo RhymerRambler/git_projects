@@ -2,6 +2,7 @@
 #include <vector>
 #include <functional>
 
+// demo of lazy evaluation using lambda's
 class PrintLater
 {
   std::vector<std::function<void()>> m_printers;
