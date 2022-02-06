@@ -1,0 +1,13 @@
+Import('env')
+
+# clone it to avoid changing the imported env
+env = env.Clone()
+
+
+env.Append(LIBS=['factory'])
+env.Append(LIBPATH=['../dyn_lib'])
+env.Append(LINKFLAGS=['-Wl,-rpath,\\$$ORIGIN/../libs', '-Wl,-z,origin'])
+exe = env.Program('main', 'main.cpp')
+
+# path is relative to build directory, which is build/exe in this case
+env.Install('../../install/bin', exe)

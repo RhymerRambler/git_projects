@@ -1,0 +1,10 @@
+Import('env')
+
+env = env.Clone()
+env.Append(LIBS=['python3.8'])
+env.Append(LIBPATH=['/usr/lib/x86_64-linux-gnu/'])
+env.Append(CPPFLAGS=['-I/usr/include/python3.8'])
+
+lib = env.SharedLibrary('libfactory', 'factory.cpp')
+env.Install('../../install/libs', lib)
+env.Install('../../install/scripts', ['gobble.py', 'data.csv'])
