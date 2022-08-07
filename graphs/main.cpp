@@ -1,5 +1,6 @@
 #include "graph.h"
 #include "DFS.h"
+#include "Dijkstra.h"
 
 #include <iostream>
 
@@ -34,12 +35,34 @@ int main()
     g2.print();
     g2.printDot("g2");
 
+    Graph g3(false);
+    g3.addNodes(7);
+    g3.addEdge(0, 1, 5);
+    g3.addEdge(0, 2, 6);
+    g3.addEdge(1, 3, 7);
+    g3.addEdge(2, 3, 3);
+    g3.addEdge(1, 4, 3);
+    g3.addEdge(2, 5, 7);
+    g3.addEdge(4, 6, 22);
+    g3.addEdge(3, 6, 15);
+    g3.addEdge(5, 6, 4);
+    g3.print();
+    g3.printDot("g3");
+
     DFS dfs(g, 0);
     std::cout << "path to 5: ";
     auto p = dfs.pathTo(5);
     for (auto e : p) {
         std::cout << e << ", ";
     }
+    Dijkstra djk(g2, 0);
+    djk.start();
+    djk.print();
+
+    Dijkstra djk2(g3, 0);
+    djk2.start();
+    djk2.print();
+
     std::cout << std::endl;
     return 0;
 }
