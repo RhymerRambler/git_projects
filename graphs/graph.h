@@ -33,6 +33,9 @@ public:
 
     int getSize() const;
     std::vector<Node::NE>* adj(int) const;
+    std::vector<Node*> nodes() const {
+      return m_Nodes;
+    }
 
     void print() const;
     void printDot(std::string name) const;
