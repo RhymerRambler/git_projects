@@ -1,0 +1,11 @@
+tensorflow_env: this is the python3 virtual environment that I created for
+using tensor flow. This was created as: "python3 -m venv tensorflow_env"
+Prior to this, virtualenv package was install in the python using pip
+Use 'source tensorflow_env/bin/activate' to activate the virtual environment
+
+
+reqs.txt: it is the requirements file generated using pip freeze. Using the
+requirements file, somebody else can recreate the python environment with all
+the packages that you have in your python
+
+
