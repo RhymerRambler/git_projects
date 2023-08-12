@@ -69,6 +69,9 @@ model.compile(optimizer = tf.optimizers.Adam(),
 # train the model
 model.fit(training_images, training_labels, epochs=5)
 
+# print the summary of model
+model.summary()
+
 # Evaluate the model on unseen data
 model.evaluate(test_images, test_labels)
 

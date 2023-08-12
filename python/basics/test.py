@@ -48,5 +48,7 @@ S = 96
 E = 89.50
 print(type(M))
 print(type(E))
+# {1:8d} => pick the value from position 1 in the format call, and 8 characters
+# reserved for printing the integer
 print("I got marks: M = {1:8d}, E = {0:3.5f}\n".format(E,M))
 

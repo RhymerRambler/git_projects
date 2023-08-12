@@ -26,4 +26,16 @@ plt.title("Histogram of coin flip sum when flipping a fair coin %d times"%k)
 plt.grid()
 plt.show()
 
+##################################################################################################
 
+#cfr: https://matplotlib.org/matplotblog/posts/pyplot-vs-object-oriented-interface/
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+x = np.arange(0, 5, 0.1) # creates an array from 0 to 5 with step of 0.1
+y = np.sin(x)
+fig, ax = plt.subplots() # create a figure and a axes object - allows to create
+                         # multiple axes objects per figure
+ax.plot(x, y)
+plt.show()
