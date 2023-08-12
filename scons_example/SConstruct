@@ -1,11 +1,17 @@
+import scons_compiledb
+
 env = Environment()
 
 # set those attributes that are common to all the sconscripts called below
 env['CXX'] = 'g++'
-env.Append(CPPFLAGS=['-I./include'])
+env.Append(CPPFLAGS=['-I./incl/base'])
+
+scons_compiledb.enable(env)
 
 # using variant_dir to build stuff in directory separate from src
 # using exports to pass the environment. The called sconscript would need to
 # import it
 env.SConscript('dyn_lib/SConscript', variant_dir='build/dyn_lib', duplicate=0, exports={'env' : env})
 env.SConscript('exe/SConscript', variant_dir='build/exe', duplicate=0, exports={'env' : env})
+
+env.CompileDb()
