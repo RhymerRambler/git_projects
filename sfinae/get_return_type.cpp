@@ -22,6 +22,6 @@ int main()
   // to the return type of the function
   decltype(declval<A>().getInt()) w = 1;
   decltype(declval<A>().getStr()) x = "uuu";
-  std::cout  << x << w << y << std::endl;
+  std::cout  << x << w << std::endl;
   return 0;
 }
